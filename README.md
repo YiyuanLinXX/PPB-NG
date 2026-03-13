@@ -4,7 +4,7 @@ Last updated by [Yiyuan Lin](yl3663@cornell.edu) on Mar 12, 2026
 
 **The PPB-NG codebase is currently under construction. Please stay tuned for updates.**
 
-<img src="assets/PPBNG_Annotation.png" width="100%" />
+<img src="assets/ppbng_in_the_field.gif" width="100%" />
 
 ## PPB-NG Modular Design
 <img src="assets/PPBNG_System_Modular_Design_20260313_horizontal.png" width="100%" />
