@@ -1,0 +1,11 @@
+# Binds an inert device process to one already-created dataset session.
+# Repeating the same request_id with the same payload is idempotent. Reusing it
+# with different fields must be rejected. Implementations must refuse prepare
+# while streaming and must never create or overwrite the session directory.
+string request_id
+string session_id
+string session_directory
+---
+bool accepted
+bool duplicate_request
+string message

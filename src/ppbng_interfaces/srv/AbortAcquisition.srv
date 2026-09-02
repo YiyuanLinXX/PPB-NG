@@ -1,0 +1,11 @@
+# Aborts setup or recording through the controlled-stop/finalization path.
+# It is not an emergency process kill.
+string request_id
+string reason
+---
+bool accepted
+bool duplicate_request
+string session_id
+uint8 resulting_state
+string message
+

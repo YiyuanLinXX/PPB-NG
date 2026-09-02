@@ -1,0 +1,11 @@
+# request_id is required and identifies this logical command. Repeating the
+# same request_id with identical fields must return the original outcome.
+string request_id
+string dataset_name
+bool force_degraded
+---
+bool accepted
+bool duplicate_request
+string session_id
+string session_directory
+string message

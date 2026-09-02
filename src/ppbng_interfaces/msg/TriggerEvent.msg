@@ -1,0 +1,8 @@
+std_msgs/Header header
+string channel
+uint64 channel_sequence
+uint64 pps_sequence
+uint64 offset_ticks
+uint64 ticks_per_second
+ppbng_interfaces/TimeQuality time_quality
+

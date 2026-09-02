@@ -1,0 +1,3 @@
+#include "ppbng_gnss/fault_policy.hpp"
+#include <gtest/gtest.h>
+TEST(GnssFaultPolicy, StorageIntegrityTimingStopGloballyButRecoverableTransportDoesNot){using namespace ppbng_gnss;EXPECT_TRUE(fault_policy(ProductionFaultKind::storage_write).causes_global_stop);EXPECT_TRUE(fault_policy(ProductionFaultKind::storage_flush_close).causes_global_stop);EXPECT_TRUE(fault_policy(ProductionFaultKind::integrity).causes_global_stop);EXPECT_TRUE(fault_policy(ProductionFaultKind::timing).causes_global_stop);EXPECT_FALSE(fault_policy(ProductionFaultKind::device_transport).causes_global_stop);EXPECT_FALSE(fault_policy(ProductionFaultKind::device_timeout).causes_global_stop);EXPECT_STREQ(fault_policy(ProductionFaultKind::device_transport).code,"GNSS_DEVICE_OR_TRANSPORT_FAULT");}

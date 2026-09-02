@@ -1,0 +1,92 @@
+schema_version: 1
+
+safety:
+  hardware_enabled: false
+  allow_device_reset: false
+  allow_network_reconfiguration: false
+  allow_firmware_update: false
+
+session:
+  output_root: ""
+  planned_duration_seconds: 7200
+  capacity_headroom_basis_points: 2500
+  minimum_reserve_bytes: 107374182400
+  disk_check_interval_ms: 1000
+  throughput_evidence_path: ""
+  segment_duration_seconds: 300
+  checkpoint_interval_seconds: 5
+  dark_duration_seconds: 5.0
+
+timing:
+  port: ""
+  baud_rate: 115200
+  pps_required: false
+  maximum_holdover_seconds: 3
+  oscillator_drift_ppb: 50000
+  channels:
+    fx10e_hz: 120.0
+    swir_hz: 120.0
+    rgb_thermal_hz: 2.0
+
+gnss:
+  port: ""
+  baud_rate: 115200
+  receive_only: true
+  expected_gga_hz: 10.0
+  expected_uniheading_hz: 10.0
+  maximum_bracket_span_ms: 250
+  maximum_endpoint_age_ms: 150
+
+rsm400:
+  port: ""
+  baud_rate: 115200
+  telemetry_hz: 2.0
+  observe_only_on_launch: true
+  require_stab_for_start: true
+  allow_of002_offsets: true
+
+thermal:
+  expected_model: "A6701"
+  expected_user_id: "FLIR_A6701"
+  expected_device_id: ""
+  expected_mac: ""
+  expected_ip: ""
+  rate_hz: 2.0
+  exposure_us: null
+  gain: null
+  pixel_format: "Mono16"
+  ir_format: "Radiometric"
+  transport_width: 640
+  transport_height: 513
+  image_width: 640
+  image_height: 512
+  header_rows_first: 1
+  payload_bytes: 656640
+  frame_sync_source: "External"
+  frame_sync_mode: "UNVERIFIED_REQUIRES_HARDWARE_TEST"
+
+rgb:
+  expected_model: "BFS-U3-122S6C-C"
+  expected_serial: ""
+  rate_hz: 2.0
+  exposure_us: null
+  gain: null
+  pixel_format: "BAYER_FORMAT_REQUIRES_READBACK"
+
+hsi:
+  fx10e:
+    expected_identity: ""
+    line_rate_hz: 120.0
+    exposure_us: null
+  swir:
+    expected_identity: ""
+    line_rate_hz: 120.0
+    exposure_us: null
+  require_both_for_start: true
+  close_shutters_on_normal_stop: true
+
+recovery:
+  initial_backoff_ms: 250
+  maximum_backoff_ms: 5000
+  maximum_attempts_before_latched_fault: 20
+  warning_repeat_seconds: 5

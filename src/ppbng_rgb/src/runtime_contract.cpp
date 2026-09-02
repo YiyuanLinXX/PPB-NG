@@ -1,0 +1,14 @@
+#include "ppbng_rgb/runtime_contract.hpp"
+#include <limits>
+namespace ppbng_rgb {
+RuntimeFrameDescriptor describe_runtime_frame(const FrameInfo&i,const RgbReadback&r){
+ RuntimeFrameDescriptor d;
+ if(r.width>(std::numeric_limits<std::uint32_t>::max)()||r.height>(std::numeric_limits<std::uint32_t>::max)()||r.row_stride_bytes>(std::numeric_limits<std::uint32_t>::max)()){d.validation_detail="RGB geometry exceeds ROS metadata fields";return d;}
+ d.transport_width=static_cast<std::uint32_t>(r.width);d.transport_height=static_cast<std::uint32_t>(r.height);d.row_stride_bytes=static_cast<std::uint32_t>(r.row_stride_bytes);d.payload_size_bytes=i.payload_bytes;d.pixel_format=i.pixel_format;d.raw_payload_preserved=true;d.complete=i.complete;d.sdk_frame_counter=i.frame_id;d.camera_timestamp_ns=i.camera_timestamp_ns;d.host_receive_monotonic_ns=i.host_receive_monotonic_ns;d.chunk_data_valid=i.chunk_data_valid;d.chunk_frame_id_valid=i.chunk_frame_id_valid;d.chunk_frame_id=i.chunk_frame_id;d.chunk_timestamp_valid=i.chunk_timestamp_valid;d.chunk_timestamp=i.chunk_timestamp;d.exposure_time_valid=i.exposure_time_valid;d.exposure_time_us=i.exposure_time_us;d.gain_valid=i.gain_valid;d.gain_db=i.gain_db;d.black_level_valid=i.black_level_valid;d.black_level=i.black_level;d.white_balance_red_valid=i.white_balance_red_valid;d.white_balance_red=i.white_balance_red;d.white_balance_blue_valid=i.white_balance_blue_valid;d.white_balance_blue=i.white_balance_blue;d.exposure_auto=i.exposure_auto;d.gain_auto=i.gain_auto;d.balance_white_auto=i.balance_white_auto;
+ if(i.payload_bytes!=r.payload_bytes)d.validation_detail="frame payload differs from configuration readback";else if(i.pixel_format!=r.pixel_format)d.validation_detail="frame pixel format differs from configuration readback";else if(!i.complete)d.validation_detail="incomplete RGB frame";else d.validation_detail="raw Bayer payload validated";
+ return d;
+}
+Status validate_inert_arm_preflight(bool authorized,bool prepared,const std::string&id,const std::string&channel,const RgbConfiguration&c,std::size_t capacity,std::uint64_t wait){
+ if(!authorized)return {ErrorCode::invalid_state,"hardware authorization is false"};if(!prepared)return {ErrorCode::invalid_state,"session is not prepared"};if(id.empty()||channel.empty())return {ErrorCode::invalid_configuration,"identity and trigger channel are required"};if(!capacity||!wait)return {ErrorCode::invalid_configuration,"positive association bounds are required"};if(!c.width||!c.height||!c.row_stride_bytes||!c.payload_bytes||c.pixel_format.rfind("Bayer",0)!=0||c.trigger_source.empty()||c.trigger_activation.empty())return {ErrorCode::invalid_configuration,"raw Bayer geometry and external trigger configuration are required"};return {ErrorCode::none,"inert preflight passed without SDK access"};
+}
+} // namespace ppbng_rgb

@@ -1,0 +1,3 @@
+#include "ppbng_hsi/fault_policy.hpp"
+#include <gtest/gtest.h>
+TEST(HsiFaultPolicy, StorageIntegrityTimingStopGloballyButRecoverableTransportDoesNot){using namespace ppbng_hsi;EXPECT_TRUE(fault_policy(ProductionFaultKind::storage_write).causes_global_stop);EXPECT_TRUE(fault_policy(ProductionFaultKind::storage_flush_close).causes_global_stop);EXPECT_TRUE(fault_policy(ProductionFaultKind::integrity).causes_global_stop);EXPECT_TRUE(fault_policy(ProductionFaultKind::timing).causes_global_stop);EXPECT_FALSE(fault_policy(ProductionFaultKind::device_transport).causes_global_stop);EXPECT_FALSE(fault_policy(ProductionFaultKind::device_timeout).causes_global_stop);EXPECT_STREQ(fault_policy(ProductionFaultKind::device_transport).code,"HSI_DEVICE_OR_TRANSPORT_FAULT");}

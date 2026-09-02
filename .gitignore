@@ -1,1 +1,15 @@
-Data/
+build/
+install/
+log/
+.pixi/
+.vscode/
+*.user
+*.suo
+__pycache__/
+.pytest_cache/
+
+# Runtime data and private machine configuration never belong in source control.
+data/
+hardware_test_data/
+secrets/
+config/local/

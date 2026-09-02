@@ -1,0 +1,36 @@
+uint8 STATUS_UNAVAILABLE=0
+uint8 STATUS_AVAILABLE=1
+uint8 STATUS_DEGRADED=2
+
+ppbng_interfaces/SampleStamp frame_stamp
+uint8 gnss_status
+string gnss_detail
+uint64 gnss_before_sequence
+uint64 gnss_after_sequence
+uint64 gnss_before_age_ns
+uint64 gnss_after_age_ns
+float64 latitude_deg
+float64 longitude_deg
+float64 altitude_m
+bool heading_valid
+float64 heading_deg
+float64 gnss_pitch_deg
+uint8 before_fix_quality
+uint8 after_fix_quality
+uint64 gnss_before_utc_anchor_sequence
+uint64 gnss_after_utc_anchor_sequence
+uint64 gnss_before_anchor_host_delta_ns
+uint64 gnss_after_anchor_host_delta_ns
+uint64 gnss_before_anchor_clock_residual_ns
+uint64 gnss_after_anchor_clock_residual_ns
+
+uint8 rsm_status
+string rsm_detail
+uint64 rsm_before_sequence
+uint64 rsm_after_sequence
+uint64 rsm_before_age_ns
+uint64 rsm_after_age_ns
+float64 roll_deg
+float64 pitch_deg
+bool yaw_valid
+float64 yaw_deg

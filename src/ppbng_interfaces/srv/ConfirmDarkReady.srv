@@ -1,0 +1,10 @@
+# request_id is required. Repeating the same request_id with the same payload
+# must return the original outcome without starting dark capture twice.
+string request_id
+---
+bool accepted
+bool duplicate_request
+string session_id
+uint8 resulting_state
+string message
+

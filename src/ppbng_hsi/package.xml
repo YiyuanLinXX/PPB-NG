@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ppbng_hsi</name>
+  <version>0.1.0</version>
+  <description>SDK-independent dual hyperspectral acquisition contracts and mocks.</description>
+  <maintainer email="yl3663@cornell.edu">Yiyuan Lin</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>std_srvs</depend>
+  <depend>ppbng_interfaces</depend>
+  <depend>ppbng_storage</depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

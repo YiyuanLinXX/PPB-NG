@@ -1,0 +1,8 @@
+#include "ppbng_core/gga_utc_resolver.hpp"
+#include <gtest/gtest.h>
+using namespace ppbng_core;
+TEST(GgaUtcResolver, ResolvesSameEpochWithoutSystemClock){GgaUtcResolver r(2000000000ULL,100000000ULL);ASSERT_TRUE(r.observe_anchor({7,3,1000,172800000000000LL+12*3600LL*1000000000LL}));auto x=r.resolve("120001.000",1000001000,3);ASSERT_TRUE(x);EXPECT_EQ(x->anchor_sequence,7U);}
+TEST(GgaUtcResolver, ResolvesMidnightUniquely){constexpr long long D=86400LL*1000000000LL;GgaUtcResolver r(3000000000ULL,100000000ULL);ASSERT_TRUE(r.observe_anchor({9,4,1000,10*D+86399000000000LL}));auto x=r.resolve("000001.000",2000001000,4);ASSERT_TRUE(x);EXPECT_EQ(x->utc_nanoseconds,11*D+1000000000LL);}
+TEST(GgaUtcResolver, ResolvesGgaThatArrivedBeforeNearbyAnchor){constexpr long long D=86400LL*1000000000LL;GgaUtcResolver r(3000000000ULL,100000000ULL);ASSERT_TRUE(r.observe_anchor({9,4,2000001001,11*D+1000000000LL}));auto x=r.resolve("235959.000",1001,4);ASSERT_TRUE(x);EXPECT_EQ(x->utc_nanoseconds,10*D+86399000000000LL);EXPECT_EQ(x->anchor_sequence,9U);EXPECT_EQ(x->host_delta_ns,2000000000U);}
+TEST(GgaUtcResolver, NewConnectionEpochDropsOldAnchors){constexpr long long D=86400LL*1000000000LL;GgaUtcResolver r(3000000000ULL,100000000ULL);ASSERT_TRUE(r.observe_anchor({1,4,1000,10*D}));ASSERT_TRUE(r.observe_anchor({1,5,2000,11*D}));EXPECT_FALSE(r.resolve("000000.000",1000,4));ASSERT_TRUE(r.resolve("000000.000",2000,5));}
+TEST(GgaUtcResolver, RejectsEpochMismatchStaleAndClockResidual){GgaUtcResolver r(1000,100);r.observe_anchor({1,2,1000,100LL*86400LL*1000000000LL});EXPECT_FALSE(r.resolve("000000",1100,3));EXPECT_FALSE(r.resolve("000010",1200,2));EXPECT_FALSE(r.resolve("000000",3000,2));}

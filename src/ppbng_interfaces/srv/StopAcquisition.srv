@@ -1,0 +1,8 @@
+# request_id has the same idempotency contract as StartAcquisition.
+string request_id
+string reason
+---
+bool accepted
+bool duplicate_request
+string session_id
+string message

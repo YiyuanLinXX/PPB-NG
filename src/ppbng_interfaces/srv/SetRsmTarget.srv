@@ -1,0 +1,8 @@
+float64 roll_deg
+float64 pitch_deg
+---
+bool accepted
+float64 applied_roll_deg
+float64 applied_pitch_deg
+string message
+

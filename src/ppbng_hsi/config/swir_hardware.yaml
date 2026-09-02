@@ -1,0 +1,36 @@
+/**:
+  ros__parameters:
+    hardware_enabled: true
+    camera_kind: swir
+    device_index: 8
+    license_path: ""
+    expected_profile_name: "SWIR3 with NI"
+    expected_sensor_serial: "462111"
+    calibration_pack_path: "C:/Users/cairlab/Documents/Applications/HyperFusion/calibration/swir/462111_OLES15_20250109_calpack.scp"
+    grabber_channel: ""
+    ni_grabber_channel: "img0"
+    ni_camera_file_path: "C:/Program Files (x86)/Specim/SDKs/SpecSensor/2020_519/external/NI/Specim_SWIR3.icd"
+    ni_camera_serial_port: ""
+    pleora_packet_size: 0
+    initialization_timeout_ms: 5000
+    callback_queue_capacity: 128
+    maximum_frame_bytes: 221184
+    device_id: "swir_462111"
+    trigger_channel: "hsi_swir"
+    # Internal = ROS starts/stops continuous acquisition; no per-line input pulse.
+    trigger_mode: "Internal"
+    spatial_samples: 384
+    spectral_bands: 288
+    line_rate_hz: 20.59
+    exposure_us: 17800.0
+    dark_line_count: 10
+    allowed_output_root: "C:/Users/cairlab/Desktop/Projects/PPB_NG_2026/ppbng_ros2_ws/hardware_test_data/hsi_ros2_preflight"
+    maximum_segment_bytes: 8589934592
+    flush_every_lines: 120
+    association_evidence_confirmed: false
+    pending_trigger_capacity: 128
+    trigger_match_timeout_ms: 100
+    recovery_max_attempts: 5
+    recovery_initial_backoff_ms: 250
+    recovery_max_backoff_ms: 4000
+    recovery_consecutive_frame_timeouts: 3
