@@ -1,0 +1,183 @@
+# Copy to a local ignored overlay and fill only after interface identities are verified.
+# Never put NTRIP credentials here; this PC does not own NTRIP.
+schema_version: 1
+
+safety:
+  configured: false
+  hardware_enabled: false
+  # These operations are outside the acquisition launch's authority. Any future
+  # maintenance workflow must obtain its own explicit operator approval.
+  allow_device_reset: false
+  allow_network_reconfiguration: false
+  allow_firmware_update: false
+
+machine_id: "REQUIRED"
+
+session:
+  # Must already exist. Start creates one exclusive child session beneath it.
+  output_root: "D:/PPBNG_DATA__REQUIRED__"
+  planned_duration_seconds: 7200
+  # 25% covers file framing, sidecars, dark data, recovery segments, and rate uncertainty.
+  capacity_headroom_basis_points: 2500
+  # Keep 100 GiB available for orderly checkpoint/finalization and OS safety.
+  minimum_reserve_bytes: 107374182400
+  disk_check_interval_ms: 1000
+  # Must point to the immutable JSON created by an explicitly approved durable-write
+  # qualification on this exact output root. Launch rechecks root, volume serial,
+  # filesystem, durable flags, byte count, duration, and measured rate.
+  throughput_evidence_path: "REQUIRED"
+
+runtime:
+  # A timeout treats any unanswered start as possibly-open and enters safe stop.
+  batch_timeout_ms: 5000
+
+time_authority:
+  maximum_host_skew_ns: 250000000
+  trigger_wait_timeout_ns: 500000000
+  unverified_uncertainty_ns: 250000000
+  confirmed_uncertainty_ns: 1000000
+  expected_system_offset_ns: 0
+  # Keep false until PPS/UM982 serial-delay association is bench-validated.
+  pps_gnss_evidence_confirmed: false
+
+timing:
+  # Use uno_r4_ascii with the currently validated D11/D12 firmware. The
+  # protocol_v1 backend is reserved for a future PPS-capable controller.
+  backend: "uno_r4_ascii"
+  # false starts the frozen trigger schedule from the controller's hardware clock
+  # without waiting for PPS. Trigger IDs/ticks remain available, but UTC quality is
+  # UNSYNCED until independently defensible PPS evidence exists.
+  pps_required: false
+  port: "COM__REQUIRED__"
+  baud_rate: 115200
+  trusted_usb_identity_mapping: false
+  usb_vid: 0
+  usb_pid: 0
+  usb_serial: "REQUIRED"
+  schedule_id: 1
+  ticks_per_second: 1000000
+  channels:
+    fx10e: {enabled: false, rate_numerator_hz: 1, rate_denominator: 1, pulse_width_ticks: 100, phase_ticks: 0}
+    swir: {enabled: false, rate_numerator_hz: 1, rate_denominator: 1, pulse_width_ticks: 100, phase_ticks: 0}
+    rgb: {enabled: true, rate_numerator_hz: 2, rate_denominator: 1, pulse_width_ticks: 1000, phase_ticks: 0}
+    thermal: {enabled: true, rate_numerator_hz: 2, rate_denominator: 1, pulse_width_ticks: 1000, phase_ticks: 0}
+
+gnss:
+  port: "COM__REQUIRED__"
+  baud_rate: 115200
+  receive_only: true
+  recovery:
+    recovery_max_attempts: 5
+    recovery_initial_backoff_ms: 250
+    recovery_max_backoff_ms: 4000
+    # 200 x the 10 ms polling cadence is approximately a 2 s silence window.
+    recovery_consecutive_receive_timeouts: 200
+
+rsm400:
+  port: "COM__REQUIRED__"
+  telemetry_hz: 2.0
+  allow_observation_commands: true
+  observe_only_on_launch: true
+  storage_stem: "rsm400"
+  flush_every_records: 10
+  # ICD 5.6.1 defines digit 2 (major status) value 4 as STAB mode.
+  require_ready_telemetry: false
+  stab_major_status_confirmed: true
+  expected_stab_major_status: 4
+  # Zero accepts only the documented no-error readiness state; change only with
+  # a reviewed Stage 5 acceptance rule.
+  maximum_ready_error_level: 0
+  ready_timeout_ms: 2000
+  # Readiness is observe-only. Existing manual control services remain disabled.
+  allow_control: false
+  # Keep false until the exact installed firmware/ICD features are verified.
+  features_confirmed: false
+  of002_available: false
+  of005_available: false
+
+thermal:
+  # Must equal the exact GenICam TLDevice DeviceID read during approved Stage 1.
+  expected_device_id: "REQUIRED"
+  # Optional read-only inventory evidence; not yet used as an identity selector.
+  expected_mac: ""
+  expected_ip: ""
+  expected_model: "A6701"
+  acquisition:
+    frame_sync_mode: "Integration"
+    frame_sync_polarity: "ActiveHigh"
+    # Confirm only after the approved Stage 4 electrical/trigger bench test.
+    frame_sync_evidence_confirmed: false
+    # Keep true in production. Set false only for an explicitly non-radiometric bench test.
+    require_complete_calibration_metadata: true
+    association_capacity: 256
+    association_max_wait_ms: 500
+    association_evidence_confirmed: false
+    consecutive_timeout_threshold: 3
+    recovery_maximum_attempts: 5
+    recovery_initial_backoff_ms: 250
+    recovery_maximum_backoff_ms: 4000
+
+rgb:
+  expected_serial: "REQUIRED"
+  acquisition:
+    width: 4096
+    height: 3000
+    row_stride_bytes: 4096
+    payload_bytes: 12288000
+    pixel_format: "BayerRG8"
+    exposure_auto: "Continuous"
+    gain_auto: "Continuous"
+    balance_white_auto: "Once"
+    balance_white_auto_profile: "Outdoor"
+    auto_exposure_control_priority: "Gain"
+    auto_exposure_time_upper_limit_us: 5000.0
+    auto_exposure_gain_upper_limit_db: 12.0
+    chunk_data_enabled: true
+    trigger_source: "Line0"
+    trigger_activation: "RisingEdge"
+    association_capacity: 256
+    association_max_wait_ms: 500
+    association_evidence_confirmed: false
+    consecutive_timeout_threshold: 3
+    recovery_maximum_attempts: 5
+    recovery_initial_backoff_ms: 250
+    recovery_maximum_backoff_ms: 4000
+
+hsi:
+  license_path: "REQUIRED"
+  fx10e:
+    expected_identity: "REQUIRED"
+    device_index: -1
+    spatial_samples: 1024
+    spectral_bands: 448
+    line_rate_hz: 120.0
+    exposure_us: 1000.0
+    dark_line_count: 1200
+    # 128 lines provide about 1.07 s of bounded callback buffering at 120 Hz.
+    # The launch file derives maximum_frame_bytes from the exact line geometry.
+    callback_queue_capacity: 128
+    pending_trigger_capacity: 128
+    trigger_match_timeout_ms: 500
+    association_evidence_confirmed: false
+    recovery:
+      recovery_max_attempts: 5
+      recovery_initial_backoff_ms: 250
+      recovery_max_backoff_ms: 4000
+      recovery_consecutive_frame_timeouts: 3
+  swir:
+    expected_identity: "REQUIRED"
+    device_index: -1
+    spatial_samples: 384
+    spectral_bands: 288
+    line_rate_hz: 120.0
+    exposure_us: 1000.0
+    dark_line_count: 1200
+    callback_queue_capacity: 128
+    pending_trigger_capacity: 128
+    trigger_match_timeout_ms: 500
+    association_evidence_confirmed: false
+    recovery:
+      recovery_max_attempts: 5
+      recovery_initial_backoff_ms: 250
+      recovery_max_backoff_ms: 4000
+      recovery_consecutive_frame_timeouts: 3

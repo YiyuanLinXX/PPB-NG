@@ -1,0 +1,4 @@
+# Offline image export only; install in a separate environment, not ROS Python.
+numpy>=1.24
+Pillow>=10
+PyYAML>=6

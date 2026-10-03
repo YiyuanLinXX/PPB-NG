@@ -2,6 +2,7 @@ build/
 install/
 log/
 .pixi/
+.venv-export/
 .vscode/
 *.user
 *.suo
@@ -10,6 +11,13 @@ __pycache__/
 
 # Runtime data and private machine configuration never belong in source control.
 data/
+data_exports/
+logs/
+artifacts/
+*.partial
 hardware_test_data/
 secrets/
 config/local/
+
+# Local source backup and existing datasets.
+/Data/
