@@ -6,17 +6,11 @@ Last updated by [Yiyuan Lin](mailto:yl3663@cornell.edu) on October 3, 2026
 
 This repository includes the acquisition codebase for PhytoPatholoBot Next Generation (PPB-NG), a field phenotyping robot that combines hyperspectral, RGB, and thermal imaging with GNSS and stabilization-platform telemetry. The acquisition stack runs on a Windows computer with ROS 2 Jazzy, recording raw sensor data and the metadata needed to associate images with position, platform attitude, and timing evidence. Navigation and base safety run separately on the Raspberry Pi.
 
-<br>
-
 <img src="assets/PPBNG_2026.png" width="100%" />
-
-<br>
 
 ## Operation Manual
 
 For configuration, building, guided dark-reference capture, field acquisition, safe shutdown, and dataset verification, see the [PPB-NG Operation Manual](OPERATION_MANUAL.md). For offline image conversion and hyperspectral visualization, see the [Data Export Guide](PPBNG_Imaging/docs/DATA_EXPORT.md). For reference, you can also find our [Internal Operation Manual](docs/PPBNG_Operation_Manual.pdf) to learn understand we deploy the robot in the field.
-
-<br>
 
 ## PPB-NG Sensor System
 
@@ -31,13 +25,9 @@ For configuration, building, guided dark-reference capture, field acquisition, s
 
 The HSI cameras use their own continuous timing and do not share the RGB/thermal trigger. The supplied configuration operates without PPS; host-time association does not establish precise exposure-time UTC synchronization. RSM400 attitude describes its platform, not the robot chassis or independently mounted RGB/thermal cameras.
 
-<br>
-
 ## PPB-NG Modular Design
 
 <img src="assets/PPBNG_System_Modular_Design_20261003.png" width="100%" />
-
-<br>
 
 ## Repository Layout
 
@@ -45,8 +35,6 @@ The HSI cameras use their own continuous timing and do not share the RGB/thermal
 - [`PPBNG_Imaging/`](PPBNG_Imaging/README.md): Windows ROS 2 acquisition workspace, including `src/`, `tools/`, `firmware/`, and data export documentation in `docs/`.
 - `docs/`: shared robot documentation, including the internal operation manual.
 - `OPERATION_MANUAL.md`: setup and operating procedures.
-
-<br>
 
 ## Software and Configuration
 
@@ -65,21 +53,15 @@ cd .\PPBNG_Imaging
 
 The acquisition command starts the guided dark-reference and recording workflow; `field_01` is the dataset name and `60` is the maximum scene duration in minutes. Follow the operator prompts and stop robot motion before stopping acquisition.
 
-<br>
-
 ## Robot Integration
 
 The acquisition computer publishes `/ppbng/safety/thermal_motion_permitted` for the Raspberry Pi navigation stack. Permission depends on thermal NUC state and acquisition/device health. The Pi must inhibit motion when permission is false or stale, implement an independent timeout watchdog, and retain its RTK and emergency-stop logic. Verify cross-host stop behavior before autonomous operation. Network settings and the message contract are documented in the [operation manual](OPERATION_MANUAL.md#network-and-robot-safety).
-
-<br>
 
 ## Data Recording and Export
 
 RGB and thermal payloads are saved in `.ppbseg` containers; hyperspectral lines are saved as ENVI BIL data with headers, indices, and timestamps. Preserve the session manifest, configuration snapshot, calibration metadata, and sidecars alongside the raw data.
 
 The A6701 transport preserves all 640 × 513 samples, including its auxiliary first row and 640 × 512 image region. Thermal counts and false-color previews are not temperatures in Celsius. The FX10e full-export tool renders all saved lines into RGB tiles using three visible bands; these are display products, not full-spectrum reflectance or georectified imagery. See the [Data Export Guide](PPBNG_Imaging/docs/DATA_EXPORT.md) for commands and interpretation limits.
-
-<br>
 
 ## Citation
 
@@ -102,13 +84,9 @@ If you find this work useful for your research, please consider citing our work:
 Citation information will be updated upon publication.
 ```
 
-<br>
-
 ## License
 
 This project is licensed under the [Apache License 2.0](LICENSE). Third-party SDKs and calibration materials remain subject to their own licenses.
-
-<br>
 
 ## Maintenance
 
