@@ -67,7 +67,7 @@ The A6701 transport preserves all 640 × 513 samples, including its auxiliary fi
 
 If you find this work useful for your research, please consider citing our work:
 
-```tex
+```bibtex
 # PPB-NG Navigation
 @misc{lin2026fielddeployablegnssbasednavigationstack,
       title={A Field-Deployable GNSS-based Navigation Stack for Outdoor Mobile Robots}, 
@@ -80,7 +80,7 @@ If you find this work useful for your research, please consider citing our work:
       doi={https://doi.org/10.48550/arXiv.2609.28933},
 }
 
-# PPBNG
+# PPB-NG
 Citation information will be updated upon publication.
 ```
 
