@@ -25,6 +25,10 @@ For configuration, building, guided dark-reference capture, field acquisition, s
 
 The HSI cameras use their own continuous timing and do not share the RGB/thermal trigger. The supplied configuration operates without PPS; host-time association does not establish precise exposure-time UTC synchronization. RSM400 attitude describes its platform, not the robot chassis or independently mounted RGB/thermal cameras.
 
+## PPB-NG Multi-Modal Sample Data
+
+<img src="assets/ppbng_sample_data.webp" width="100%" />
+
 ## PPB-NG Modular Design
 
 <img src="assets/PPBNG_System_Modular_Design_20261003.png" width="100%" />
