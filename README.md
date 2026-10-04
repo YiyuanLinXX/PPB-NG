@@ -2,9 +2,13 @@
 
 Last updated by [Yiyuan Lin](mailto:yl3663@cornell.edu) on October 3, 2026
 
+[**Project Page**](https://yiyuanlinxx.github.io/robots/ppbng) | [**Paper (Robot Navigation)**](https://doi.org/10.48550/arXiv.2609.28933) | [**Citation**](#citation)
+
 ---
 
 This repository includes the acquisition codebase for PhytoPatholoBot Next Generation (PPB-NG), a field phenotyping robot that combines hyperspectral, RGB, and thermal imaging with GNSS and stabilization-platform telemetry. The acquisition stack runs on a Windows computer with ROS 2 Jazzy, recording raw sensor data and the metadata needed to associate images with position, platform attitude, and timing evidence. Navigation and base safety run separately on the Raspberry Pi.
+
+ For more details about PPB-NG, please visit https://yiyuanlinxx.github.io/robots/ppbng.
 
 <img src="assets/PPBNG_2026.png" width="100%" />
 
