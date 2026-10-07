@@ -1,0 +1,17 @@
+um982_driver:
+  ros__parameters:
+    # Example local NTRIP caster; replace with your installation's settings.
+    # Disabled until configured. This fixed-base connection receives RTCM
+    # corrections and does not send rover GGA.
+    ntrip_enabled: false
+    ntrip_host: "127.0.0.1"
+    ntrip_port: 2101
+    ntrip_mountpoint: "LOCAL_RTCM"
+    ntrip_username: "example_user"
+    ntrip_password: "example_password"
+
+    # Set explicitly to match your caster. Both ICY and HTTP responses are
+    # supported; the driver never probes cleartext automatically.
+    ntrip_use_tls: false
+    ntrip_socket_timeout_sec: 10.0
+    ntrip_data_timeout_sec: 5.0

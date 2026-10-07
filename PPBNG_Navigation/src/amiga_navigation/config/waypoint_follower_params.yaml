@@ -1,0 +1,196 @@
+/waypoint_follower:
+  ros__parameters:
+    # Shared follower runtime parameters.
+    # control_frequency: main control loop frequency in Hz.
+    # max_odom_age_sec: maximum allowed /robot/odom age before the follower stops.
+    # enable_csv_logging: whether to save per-cycle controller logs to CSV.
+    # publish_debug: whether to publish structured controller debug messages on /nav/controller_debug.
+    # debug_publish_period_sec: minimum interval between debug publishes in seconds.
+    # terminal_status_enabled: whether to print runtime status updates in the terminal.
+    # terminal_status_level: terminal verbosity level, one of silent, normal, verbose, debug.
+    # terminal_status_period_sec: minimum interval between periodic terminal status updates.
+    # terminal_show_alignment_details: whether to periodically print alignment details in terminal.
+    # terminal_show_tracking_details: whether to periodically print tracking details in terminal.
+    # log_directory: directory used for resume snapshots and optional controller logs.
+    # status_path: file storing the current reached waypoint index for resume logic.
+    # last_waypoints_path: snapshot of the last waypoint file used for resume.
+    # controller_type: default controller selection; CLI --controller has higher priority.
+    # target_speed: nominal forward speed in m/s shared by all controllers.
+    # max_angular_speed: angular velocity limit in rad/s shared by tracking controllers.
+    # min_forward_ratio: minimum fraction of target_speed allowed during slowdown.
+    # enable_start_slowdown: whether to ramp speed up near the start of each segment.
+    # enable_goal_slowdown: whether to slow down when approaching each waypoint.
+    # max_cross_track_error: hard safety limit on lateral error in meters.
+    # goal_threshold: distance in meters considered as waypoint reached.
+    # alignment_threshold: heading threshold in radians before linear tracking begins.
+    control_frequency: 10.0
+    max_odom_age_sec: 0.25
+    enable_csv_logging: true
+    publish_debug: true
+    debug_publish_period_sec: 0.2
+    terminal_status_enabled: true
+    terminal_status_level: normal
+    terminal_status_period_sec: 1.5
+    terminal_show_alignment_details: false
+    terminal_show_tracking_details: false
+    log_directory: "~/navigation_waypoints"
+    status_path: "~/navigation_waypoints/status.txt"
+    last_waypoints_path: "~/navigation_waypoints/last_waypoints.csv"
+    controller_type: pid_line # options: pid_line, pure_pursuit, mpc_rollout, mpc_formal, row_hybrid
+    # Safety watchdogs latch a zero command when fresh odometry values do not
+    # actually respond to motion commands or the waypoint stops getting closer.
+    # Restart waypoint_follower after inspecting the cause of a latched stop.
+    progress_watchdog_enabled: true
+    min_segment_length_m: 0.05
+    command_max_linear_speed: 2.0
+    command_max_angular_speed: 1.5
+    alignment_max_duration_sec: 180.0
+    alignment_progress_timeout_sec: 180.0
+    alignment_min_progress_rad: 0.05
+    tracking_progress_timeout_sec: 180.0
+    tracking_min_progress_m: 0.15
+    motion_response_timeout_sec: 180.0
+    motion_min_translation_m: 0.05
+    motion_min_rotation_rad: 0.05
+    watchdog_command_min_linear_mps: 0.05
+    watchdog_command_min_angular_rps: 0.08
+    target_speed: 0.17
+    max_angular_speed: 0.65
+    min_forward_ratio: 0.2
+    enable_start_slowdown: true
+    enable_goal_slowdown: true
+    max_cross_track_error: 1.0
+    goal_threshold: 0.30
+    alignment_threshold: 0.10
+
+    # Alignment turn controller parameters.
+    # turn_gain: proportional gain for in-place alignment.
+    # turn_min_speed: minimum angular speed during alignment in rad/s.
+    # turn_max_speed: maximum angular speed during alignment in rad/s.
+    # turn_enable_slowdown_near_target: whether to taper the minimum turn speed near alignment.
+    # turn_slowdown_angle: heading error in radians below which the minimum turn speed tapers down.
+    # turn_near_target_min_speed_ratio: fraction of turn_min_speed allowed near alignment_threshold.
+    turn_gain: 1.0
+    turn_min_speed: 0.3
+    turn_max_speed: 0.5
+    turn_enable_slowdown_near_target: false
+    turn_slowdown_angle: 0.35
+    turn_near_target_min_speed_ratio: 0.35
+
+
+    #################################################################
+    #################################################################
+    ################ PID line controller parameters. ################
+    #################################################################
+    #################################################################
+    # max_lateral_speed: maximum lateral correction speed in m/s used internally by the PID line tracker.
+    # epsilon: differential-drive geometry term used when converting desired planar motion to v/w.
+    # pid_kp, pid_ki, pid_kd: PID gains for cross-track error correction.
+    # heading_gain: additional heading correction gain during line tracking.
+    # max_heading_for_full_speed: heading error threshold below which full forward speed is allowed.
+    # dist_start_threshold: distance from segment start over which speed ramps up when enable_start_slowdown is true.
+    # dist_stop_threshold: distance to segment goal over which speed ramps down when enable_goal_slowdown is true.
+    # initial_speed_ratio: minimum speed ratio used during the initial ramp-up stage.
+    # stop_speed_ratio: minimum speed ratio used near the goal by pid_line.
+    # regulate_target_speed: whether to dynamically reduce target_speed according to error geometry.
+    max_lateral_speed: 0.4
+    epsilon: 0.5
+    pid_kp: 0.45
+    pid_ki: 0.00
+    pid_kd: 0.20
+    heading_gain: 1.35
+    max_heading_for_full_speed: 0.35
+    dist_start_threshold: 2.0
+    dist_stop_threshold: 1.0
+    initial_speed_ratio: 0.5
+    stop_speed_ratio: 0.0
+    regulate_target_speed: true
+
+
+    #################################################################
+    #################################################################
+    ############## Pure pursuit controller parameters ###############
+    #################################################################
+    #################################################################
+    # pure_pursuit_min_lookahead: minimum lookahead distance in meters.
+    # pure_pursuit_max_lookahead: maximum lookahead distance in meters.
+    # pure_pursuit_lookahead_gain: gain applied to target_speed when choosing lookahead.
+    # pure_pursuit_slowdown_distance: distance to goal in meters below which pure pursuit slows down.
+    pure_pursuit_min_lookahead: 1.5
+    pure_pursuit_max_lookahead: 6.0
+    pure_pursuit_lookahead_gain: 2.5
+    pure_pursuit_slowdown_distance: 3.0
+
+    #################################################################
+    #################################################################
+    ############### Rollout MPC controller parameters ###############
+    #################################################################
+    #################################################################
+    # mpc_horizon_steps: number of rollout steps.
+    # mpc_step_time: duration of each rollout step in seconds.
+    # mpc_candidate_count: number of angular command candidates evaluated.
+    # mpc_slowdown_distance: distance to goal in meters below which rollout MPC slows down.
+    # mpc_heading_weight: cost weight on heading error.
+    # mpc_cross_track_weight: cost weight on cross-track error.
+    # mpc_goal_distance_weight: cost weight on remaining distance to goal.
+    # mpc_effort_weight: cost weight penalizing angular effort.
+    # mpc_progress_weight: reward weight for forward progress along the segment.
+    mpc_horizon_steps: 10
+    mpc_step_time: 0.2
+    mpc_candidate_count: 15
+    mpc_slowdown_distance: 3.0
+    mpc_heading_weight: 1.5
+    mpc_cross_track_weight: 2.0
+    mpc_goal_distance_weight: 4.0
+    mpc_effort_weight: 0.3
+    mpc_progress_weight: 1.0
+
+    #################################################################
+    #################################################################
+    ############### Formal MPC controller parameters ################
+    #################################################################
+    #################################################################
+    # formal_mpc_horizon_steps: number of optimization steps in the prediction horizon.
+    # formal_mpc_step_time: duration of each prediction step in seconds.
+    # formal_mpc_min_forward_speed: lower bound on forward speed in m/s.
+    # formal_mpc_slowdown_distance: distance to goal in meters below which formal MPC slows down.
+    # formal_mpc_cross_track_weight: state cost weight on cross-track error.
+    # formal_mpc_heading_weight: state cost weight on heading error.
+    # formal_mpc_goal_distance_weight: state cost weight on normalized goal distance.
+    # formal_mpc_terminal_cross_track_weight: terminal cost weight on cross-track error.
+    # formal_mpc_terminal_heading_weight: terminal cost weight on heading error.
+    # formal_mpc_terminal_goal_distance_weight: terminal cost weight on normalized goal distance.
+    # formal_mpc_linear_effort_weight: penalty on deviation from desired forward speed.
+    # formal_mpc_angular_effort_weight: penalty on angular velocity magnitude.
+    # formal_mpc_linear_smooth_weight: penalty on step-to-step linear speed change.
+    # formal_mpc_angular_smooth_weight: penalty on step-to-step angular speed change.
+    # formal_mpc_progress_weight: reward weight for forward progress.
+    # formal_mpc_solver_maxiter: maximum number of solver iterations.
+    # formal_mpc_solver_ftol: solver convergence tolerance.
+    formal_mpc_horizon_steps: 8
+    formal_mpc_step_time: 0.25
+    formal_mpc_min_forward_speed: 0.0
+    formal_mpc_slowdown_distance: 3.0
+    formal_mpc_cross_track_weight: 8.0
+    formal_mpc_heading_weight: 4.0
+    formal_mpc_goal_distance_weight: 2.0
+    formal_mpc_terminal_cross_track_weight: 12.0
+    formal_mpc_terminal_heading_weight: 8.0
+    formal_mpc_terminal_goal_distance_weight: 6.0
+    formal_mpc_linear_effort_weight: 0.8
+    formal_mpc_angular_effort_weight: 0.4
+    formal_mpc_linear_smooth_weight: 0.5
+    formal_mpc_angular_smooth_weight: 1.2
+    formal_mpc_progress_weight: 1.0
+    formal_mpc_solver_maxiter: 40
+    formal_mpc_solver_ftol: 0.001
+
+    #################################################################
+    #################################################################
+    ############### Row hybrid controller parameters ################
+    #################################################################
+    #################################################################
+    # row_connector_length_threshold: segment length threshold in meters below which row_hybrid treats a segment as a short connector.
+    # row_length_threshold: segment length threshold in meters above which row_hybrid treats a segment as a long row.
+    row_connector_length_threshold: 3.0
+    row_length_threshold: 15.0

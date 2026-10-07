@@ -1,12 +1,12 @@
 # PPB-NG
 
-Last updated by [Yiyuan Lin](mailto:yl3663@cornell.edu) on October 3, 2026
+Last updated by [Yiyuan Lin](mailto:yl3663@cornell.edu) on October 7, 2026
 
 [[**`Project Page`**](https://yiyuanlinxx.github.io/robots/ppbng)] [[**`Paper (Robot Navigation)`**](https://doi.org/10.48550/arXiv.2609.28933)] [[**`Citation`**](#citation)]
 
 ---
 
-This repository includes the acquisition codebase for PhytoPatholoBot Next Generation (PPB-NG), a field phenotyping robot that combines hyperspectral, RGB, and thermal imaging with GNSS and stabilization-platform telemetry. The acquisition stack runs on a Windows computer with ROS 2 Jazzy, recording raw sensor data and the metadata needed to associate images with position, platform attitude, and timing evidence. Navigation and base safety run separately on the Raspberry Pi.
+This repository includes the navigation and acquisition codebase for PhytoPatholoBot Next Generation (PPB-NG), a field phenotyping robot that combines hyperspectral, RGB, and thermal imaging with GNSS and stabilization-platform telemetry. The acquisition stack runs on a Windows computer with ROS 2 Jazzy, recording raw sensor data and the metadata needed to associate images with position, platform attitude, and timing evidence. Navigation and base safety run separately on the Raspberry Pi.
 
  For more details about PPB-NG, please visit https://yiyuanlinxx.github.io/robots/ppbng.
 
@@ -39,10 +39,18 @@ The HSI cameras use their own continuous timing and do not share the RGB/thermal
 
 ## Repository Layout
 
-- [`PPBNG_Navigation/`](PPBNG_Navigation/README.md): reserved for Raspberry Pi navigation and base-safety code; the code will be added separately.
+- [`PPBNG_Navigation/`](PPBNG_Navigation/README.md): Raspberry Pi ROS 2 waypoint navigation, dual-antenna UM982 GNSS, base control, and acquisition-state motion interlock.
 - [`PPBNG_Imaging/`](PPBNG_Imaging/README.md): Windows ROS 2 acquisition workspace, including `src/`, `tools/`, `firmware/`, and data export documentation in `docs/`.
 - `docs/`: shared robot documentation, including the internal operation manual.
 - `OPERATION_MANUAL.md`: setup and operating procedures.
+
+## PPB-NG Navigation
+
+The navigation stack runs on a Raspberry Pi 5 with Ubuntu 24.04 and ROS 2 Jazzy. It uses a dual-antenna UM982 receiver for RTK position and true heading without a separate IMU, and supports PID line tracking, pure pursuit, MPC, and a hybrid row-navigation controller. An Adafruit Feather M4 CAN microcontroller connects the navigation stack to the Farm-ng Amiga base.
+
+During automatic navigation, the stack monitors acquisition health through the Windows computer's motion-permission signal. If a required camera is not acquiring normally, the thermal camera enters automatic non-uniformity correction (NUC), or permission messages time out, navigation requests a stop and waits for permission to return.
+
+See the [Navigation README](PPBNG_Navigation/README.md) for setup, waypoint recording, controller configuration, recovery behavior, and manual-override limits. For navigation without acquisition-state monitoring, refer to [PPBv2 Navigation](https://github.com/YiyuanLinXX/PPBv2/tree/main/PPBv2_Navigation).
 
 ## Software and Configuration
 

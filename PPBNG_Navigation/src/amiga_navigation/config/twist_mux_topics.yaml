@@ -1,0 +1,22 @@
+/twist_mux:
+  ros__parameters:
+    use_stamped: false
+    topics:
+      keyboard:
+        topic   : cmd_vel_key
+        timeout : 0.5
+        priority: 255
+        # Highest priority: human control through keyboard must override all other commands.
+      dangerous:
+        topic   : cmd_vel_stop
+        timeout : 1.0
+        # High priority: RTK/heading safety stop must override navigation.
+        priority: 200
+      default:
+        topic   : cmd_vel
+        timeout : 0.5
+        priority: 20
+      navigation:
+        topic   : cmd_vel_nav
+        timeout : 0.5
+        priority: 10

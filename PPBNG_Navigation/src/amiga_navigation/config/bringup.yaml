@@ -1,0 +1,70 @@
+um982_driver:
+  ros__parameters:
+    # Full-duplex Type-C USB serial device:
+    # ls -l /dev/serial/by-id/
+    serial_port: "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"
+    baudrate: 115200
+
+    # ANT1 is the master-position antenna; ANT2 is the heading/slave antenna.
+    # baseline_m is the measured ANT1-to-ANT2 distance in metres.
+    baseline_m: 1.14
+    baseline_tolerance_m: 0.05
+
+    # ANT1-to-ANT2 direction relative to the robot's forward direction,
+    # viewed from above. Positive angles turn clockwise toward robot-right.
+    #
+    #   ANT1 rear,  ANT2 front:  0.0
+    #   ANT1 front, ANT2 rear:  180.0
+    #   ANT2 on the robot's right side of ANT1:  90.0
+    #   ANT2 on the robot's left side of ANT1:  -90.0
+    #
+    # Change this value when the antenna layout changes; no code change is
+    # required. The driver still computes position at the antenna midpoint.
+    antenna_baseline_angle_deg: -90.0
+
+    # Optional small compass-heading calibration applied after layout
+    # compensation. Normally leave this at zero.
+    heading_offset_deg: 0.0
+
+    # Set to -1.0 only if the reported pitch sign is opposite to the desired
+    # robot pitch convention.
+    pitch_multiplier: 1.0
+    configure_receiver_on_start: true
+    receiver_output_period_sec: 0.1
+
+    # Configure every UM982 hardware UART whenever this driver starts.
+    # The Type-C connection used by this driver is one receiver port; the
+    # exposed TXD/RXD and TX2/RX2 headers are the other ports. GPGGA and
+    # UNIHEADINGA are enabled on every listed port. GPTHS additionally gives
+    # the Orin a simple NMEA heading sentence.
+    receiver_output_ports: ["COM1", "COM2", "COM3"]
+    receiver_port_baudrate: 115200
+    receiver_enable_gpths: true
+
+    # A navigation pose is valid only when all thresholds pass.
+    max_heading_stddev_deg: 1.0
+    max_heading_age_sec: 0.3
+    max_position_heading_skew_sec: 0.2
+    max_differential_age_sec: 3.0
+    minimum_heading_satellites: 6
+
+    # Terminal GPS status summary. Logs immediately when the solution changes
+    # between OK and NOT FIX, then at this low-rate period while unchanged.
+    gps_status_log_enabled: true
+    gps_status_log_period_sec: 5.0
+
+amiga_serial_bridge:
+  ros__parameters:
+    # Feather M4 CAN USB serial device:
+    # ls -l /dev/serial/by-id/
+    serial_port: "/dev/serial/by-id/usb-Adafruit_Industries_LLC_Feather_M4_CAN_9378F5F848364C53202020540C2A0DFF-if00"
+    baudrate: 115200
+    serial_timeout_sec: 0.1
+    serial_write_timeout_sec: 0.2
+    max_linear_speed: 2.0
+    max_angular_speed: 1.5
+
+    # If /cmd_vel_out stops updating, continuously send stop commands. This is
+    # independent of the 0.75 s watchdog running on the Feather M4.
+    watchdog_timeout_sec: 0.6
+    watchdog_period_sec: 0.1
